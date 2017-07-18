@@ -12,11 +12,17 @@ order by num_of_view desc
 limit 3;
 '''
 
-conn = psycopg2.connect("dbname=%s" % DBNAME)
-cur = conn.cursor()
-cur.execute(QUERY)
-rows = cur.fetchall()
-for row in rows:
-	print("%s : %d" % row)
+def log_analysis():
+	''' Run log analysis '''
+	conn = psycopg2.connect("dbname=%s" % DBNAME)
+	cur = conn.cursor()
+	cur.execute(QUERY)
+	rows = cur.fetchall()
+	for row in rows:
+		print("%s : %d" % row)
 
-conn.close()
+	conn.close()
+
+
+if __name__ == '__main__':
+	log_analysis()
