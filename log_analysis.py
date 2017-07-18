@@ -62,6 +62,7 @@ WHERE error_percentage > 1;
 
 
 def run_analysis(cur, analysis):
+    ''' Run the single  '''
     cur.execute(analysis['query'])
     rows = cur.fetchall()
 
@@ -73,7 +74,7 @@ def run_analysis(cur, analysis):
     print()
 
 
-def log_analysis():
+def log_analysis(analysis_list):
     ''' Start the whole log analysis '''
     conn = psycopg2.connect('dbname=%s' % DBNAME)
     cur = conn.cursor()
@@ -85,4 +86,4 @@ def log_analysis():
 
 
 if __name__ == '__main__':
-    log_analysis()
+    log_analysis(analysis_list)
