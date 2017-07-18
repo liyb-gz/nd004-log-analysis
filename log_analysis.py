@@ -7,26 +7,55 @@ analysis_list = [
 	{
 		'question': '1. What are the most popular three articles of all time?',
 		'query':  '''
-select title, sum(path_count) as num_of_view 
-from article_slug_author, path_log 
-where path like ('%'||slug||'%')
-group by title
-order by num_of_view desc
-limit 3;
+SELECT title,
+       sum(path_count) AS num_of_view
+FROM article_slug_author,
+     path_log
+WHERE path LIKE ('%'||slug||'%')
+GROUP BY title
+ORDER BY num_of_view DESC
+LIMIT 3;
 ''',
 		'answer_template': '\t"%s" : %d views'
 	},
 	{
 		'question': '2. Who are the most popular article authors of all time?',
 		'query':  '''
-select name, sum(path_count) as num_of_view 
-from article_slug_author, path_log 
-where path like ('%'||slug||'%')
-group by name
-order by num_of_view desc;
+SELECT name,
+       sum(path_count) AS num_of_view
+FROM article_slug_author,
+     path_log
+WHERE path LIKE ('%'||slug||'%')
+GROUP BY name
+ORDER BY num_of_view DESC;
 ''',
 		'answer_template': '\t%s : %d views'
+	},
+	{
+		'question': '3. On which days did more than 1% of requests lead to errors?',
+		'query':  '''
+SELECT *
+FROM
+  (SELECT daily_ok.log_date,
+          (daily_error.s_count::numeric / 
+            (daily_ok.s_count + daily_error.s_count)::numeric) * 100 
+            AS error_percentage
+   FROM
+     (SELECT log_date,
+             s_count
+      FROM daily_status_count
+      WHERE status LIKE '%200%') AS daily_ok,
+
+     (SELECT log_date,
+             s_count
+      FROM daily_status_count
+      WHERE status NOT LIKE '%200%') AS daily_error
+   WHERE daily_ok.log_date = daily_error.log_date) AS daily_error_percentage
+WHERE error_percentage > 1;
+''',
+		'answer_template': '\t%s : %.2f%% errors'
 	}
+
 ]
 
 def run_analysis(cur, analysis):
