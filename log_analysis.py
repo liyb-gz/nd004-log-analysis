@@ -33,13 +33,14 @@ ORDER BY num_of_view DESC;
         'answer_template': '\t%s : %d views'
     },
     {
-        'question': '3. On which days did more than 1% of requests lead to errors?',
+        'question': '3. On which days did more than '
+        '1% of requests lead to errors?',
         'query':  '''
 SELECT *
 FROM
   (SELECT daily_ok.log_date,
-          (daily_error.s_count::numeric / 
-            (daily_ok.s_count + daily_error.s_count)::numeric) * 100 
+          (daily_error.s_count::numeric /
+            (daily_ok.s_count + daily_error.s_count)::numeric) * 100
             AS error_percentage
    FROM
      (SELECT log_date,
