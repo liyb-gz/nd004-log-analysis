@@ -4,6 +4,7 @@ import psycopg2
 # Constants
 DBNAME = "news"
 
+# Pre-defined analyses
 analysis_list = [
     {
         'question': '1. What are the most popular three articles of all time?',
@@ -62,7 +63,7 @@ WHERE error_percentage > 1;
 
 
 def run_analysis(cur, analysis):
-    ''' Run the single  '''
+    ''' Run a single analysis'''
     cur.execute(analysis['query'])
     rows = cur.fetchall()
 
@@ -75,7 +76,7 @@ def run_analysis(cur, analysis):
 
 
 def log_analysis(analysis_list):
-    ''' Start the whole log analysis '''
+    ''' Connect to the database and start the whole log analysis process'''
     conn = psycopg2.connect('dbname=%s' % DBNAME)
     cur = conn.cursor()
 
