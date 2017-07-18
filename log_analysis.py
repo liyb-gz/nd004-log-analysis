@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import psycopg2
 
 # Constants
@@ -82,3 +83,4 @@ def log_analysis():
 
 if __name__ == '__main__':
 	log_analysis()
+
