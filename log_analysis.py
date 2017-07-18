@@ -15,5 +15,8 @@ limit 3;
 conn = psycopg2.connect("dbname=%s" % DBNAME)
 cur = conn.cursor()
 cur.execute(QUERY)
-print(cur.fetchall())
+rows = cur.fetchall()
+for row in rows:
+	print("%s : %d" % row)
+
 conn.close()
