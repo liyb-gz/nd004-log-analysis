@@ -5,9 +5,9 @@ import psycopg2
 DBNAME = "news"
 
 analysis_list = [
-	{
-		'question': '1. What are the most popular three articles of all time?',
-		'query':  '''
+    {
+        'question': '1. What are the most popular three articles of all time?',
+        'query':  '''
 SELECT title,
        sum(path_count) AS num_of_view
 FROM article_slug_author,
@@ -17,11 +17,11 @@ GROUP BY title
 ORDER BY num_of_view DESC
 LIMIT 3;
 ''',
-		'answer_template': '\t"%s" : %d views'
-	},
-	{
-		'question': '2. Who are the most popular article authors of all time?',
-		'query':  '''
+        'answer_template': '\t"%s" : %d views'
+    },
+    {
+        'question': '2. Who are the most popular article authors of all time?',
+        'query':  '''
 SELECT name,
        sum(path_count) AS num_of_view
 FROM article_slug_author,
@@ -30,11 +30,11 @@ WHERE path LIKE ('%'||slug||'%')
 GROUP BY name
 ORDER BY num_of_view DESC;
 ''',
-		'answer_template': '\t%s : %d views'
-	},
-	{
-		'question': '3. On which days did more than 1% of requests lead to errors?',
-		'query':  '''
+        'answer_template': '\t%s : %d views'
+    },
+    {
+        'question': '3. On which days did more than 1% of requests lead to errors?',
+        'query':  '''
 SELECT *
 FROM
   (SELECT daily_ok.log_date,
@@ -54,33 +54,34 @@ FROM
    WHERE daily_ok.log_date = daily_error.log_date) AS daily_error_percentage
 WHERE error_percentage > 1;
 ''',
-		'answer_template': '\t%s : %.2f%% errors'
-	}
+        'answer_template': '\t%s : %.2f%% errors'
+    }
 
 ]
 
+
 def run_analysis(cur, analysis):
-	cur.execute(analysis['query'])
-	rows = cur.fetchall()
+    cur.execute(analysis['query'])
+    rows = cur.fetchall()
 
-	print(analysis['question'])
+    print(analysis['question'])
 
-	for row in rows:
-		print(analysis['answer_template'] % row)
+    for row in rows:
+        print(analysis['answer_template'] % row)
 
-	print()
+    print()
+
 
 def log_analysis():
-	''' Start the whole log analysis '''
-	conn = psycopg2.connect('dbname=%s' % DBNAME)
-	cur = conn.cursor()
+    ''' Start the whole log analysis '''
+    conn = psycopg2.connect('dbname=%s' % DBNAME)
+    cur = conn.cursor()
 
-	for analysis in analysis_list:
-		run_analysis(cur, analysis)
+    for analysis in analysis_list:
+        run_analysis(cur, analysis)
 
-	conn.close()
+    conn.close()
 
 
 if __name__ == '__main__':
-	log_analysis()
-
+    log_analysis()
